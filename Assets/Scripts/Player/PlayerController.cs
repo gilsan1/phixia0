@@ -66,6 +66,7 @@ public class PlayerController : MonoBehaviour
         {
             if (!isJumping)
             {
+                animator.SetLayerWeight(1, 0f);
                 float jumpTime = 2 * Mathf.Sqrt(jumpPower / -Physics.gravity.y);
                 animator.SetFloat("JumpSpeed", jumpTime);
                 Debug.Log(jumpTime);
@@ -82,6 +83,7 @@ public class PlayerController : MonoBehaviour
                 return;
             }
         }
+        animator.SetLayerWeight(1, 1f);
     }
 
     private void OnAttack()
