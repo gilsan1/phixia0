@@ -3,6 +3,22 @@
 # Learn more about .gitignore:
 #     https://www.atlassian.com/git/tutorials/saving-changes/gitignore
 
+
+### Unity ###
+.vs/
+.svn/
+Assets/UnityVS/
+Assets/Asset/
+Assets/Daniel Mistage/
+.Library/
+Library/
+Temp/
+.metadata/
+obj/
+Logs/
+*.db
+
+
 # Node artifact files
 node_modules/
 dist/
