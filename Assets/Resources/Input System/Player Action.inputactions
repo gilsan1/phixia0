@@ -15,18 +15,18 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Jump",
+                    "name": "Run",
                     "type": "Button",
-                    "id": "b9438042-0320-4493-ad82-a280e1d66e7d",
+                    "id": "f12e9e47-5d86-46aa-96a0-fa6754eecb2b",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Run",
+                    "name": "Attack",
                     "type": "Button",
-                    "id": "f12e9e47-5d86-46aa-96a0-fa6754eecb2b",
+                    "id": "3fd50afe-fa98-4220-ab40-ca795a3c99d1",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -91,23 +91,23 @@
                 },
                 {
                     "name": "",
-                    "id": "321ffca1-8a18-44f0-be96-72f7710031ab",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Jump",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "5c698025-3d68-43d6-a65a-afab96c33b89",
                     "path": "<Keyboard>/shift",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Run",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "2f9c5abc-917f-4418-a2c8-abf5fd7763a4",
+                    "path": "<Keyboard>/r",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Attack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

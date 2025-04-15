@@ -14,7 +14,7 @@ public class PlayerContoller : MonoBehaviour
     private float runSpeed = 4f;
     private float moveSpeed = 2f;
     private float turnSpeed = 10f;
-    private float jumpPower = 1f;
+    private float jumpPower = 2f;
 
     private bool isJumping = false;
 
@@ -97,23 +97,43 @@ public class PlayerContoller : MonoBehaviour
 
     void JumpHandler()
     {
-        state = eCHARACTER_STATE.JUMP;
-        animator.SetTrigger("Jump");
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if (!isJumping)
+            {
+                float jumpTime = 2 * Mathf.Sqrt(jumpPower / -Physics.gravity.y);
+                animator.SetFloat("JumpSpeed", jumpTime);
+                Debug.Log(jumpTime);
+                animator.SetTrigger("Jump");
 
-        // 점프 애니메이션 타이밍에 맞춰 중력 적용
-        Vector3 jumpForce = Vector3.up * Mathf.Sqrt(jumpPower * -2f * Physics.gravity.y);
-        rigid.AddForce(jumpForce, ForceMode.VelocityChange);
+                Vector3 jumpVelocity = Vector3.up * Mathf.Sqrt(jumpPower * -Physics.gravity.y);
+                rigid.AddForce(jumpVelocity, ForceMode.VelocityChange);
+
+                animator.SetBool("isGround", false);
+                isJumping = true;
+            }
+            else
+            {
+                return;
+            }
+        }
+    }
+
+    void OnAttack()
+    {
+        animator.SetTrigger("Attack");
     }
 
     public void JumpStart()
     {
         state = eCHARACTER_STATE.JUMP;
-        animator.SetBool("Jumping", true);
     }
 
     public void JumpEnd()
     {
-        animator.SetBool("jumping", false);
         UpdateState();
     }
+    
+
+    // RayCast로 해보기
 }
