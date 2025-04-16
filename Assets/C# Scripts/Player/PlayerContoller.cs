@@ -1,23 +1,19 @@
 using System.Collections;
-using System.Collections.Generic;
 using JetBrains.Rider.Unity.Editor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerContoller : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
-    private eCHARACTER_STATE state;
     private Vector3 movement;
+
+    public float runSpeed = 4f;
+    public float moveSpeed = 2f;
+    public float turnSpeed = 10f;
+
+    public eCHARACTER_STATE state;
     private Animator animator;
     private Rigidbody rigid;
-
-    private float runSpeed = 4f;
-    private float moveSpeed = 2f;
-    private float turnSpeed = 10f;
-    private float jumpPower = 2f;
-
-    private bool isJumping = false;
-
 
 
     private void Awake()
@@ -26,114 +22,69 @@ public class PlayerContoller : MonoBehaviour
         rigid = GetComponent<Rigidbody>();
     }
 
-
-    private void Update()
-    {
-        if (state != eCHARACTER_STATE.JUMP)
-        {
-            UpdateState();
-            MoveHandler();
-
-            // 점프 키 입력 시
-            if (Keyboard.current.spaceKey.wasPressedThisFrame)
-            {
-                JumpHandler();
-            }
-        }
-    }
-
-
-
     private void UpdateState()
     {
+        if (state == eCHARACTER_STATE.ATTACK)
+            return;
+
         if (movement.magnitude < 0.1f)
         {
             state = eCHARACTER_STATE.IDLE;
-            animator.SetInteger("State", (int)state);
         }
         else if (Keyboard.current.leftShiftKey.isPressed)
         {
             state = eCHARACTER_STATE.RUN;
-            animator.SetInteger("State", (int)state);
         }
         else
-        { 
+        {
             state = eCHARACTER_STATE.WALK;
-            animator.SetInteger("State", (int)state);
         }
 
-        UpdateAnimator();
-    }
-
-
-
-    private void UpdateAnimator()
-    {
+        animator.SetInteger("State", (int)state);
         animator.SetBool("isMove", state == eCHARACTER_STATE.WALK || state == eCHARACTER_STATE.RUN);
         animator.SetBool("isRun", state == eCHARACTER_STATE.RUN);
     }
 
-    private void MoveHandler()
+    private void Update()
     {
-        if (state == eCHARACTER_STATE.IDLE)  // IDLE 
-            return;
-         
-        float speed = (state == eCHARACTER_STATE.RUN) ? runSpeed : moveSpeed; // 상태에 따라 속도를 정함
-
-        transform.Translate(movement * speed * Time.deltaTime, Space.World);
-
-        // 회전 //
-        Quaternion targetRotation = Quaternion.LookRotation(movement); // 바라볼 방향
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, turnSpeed * Time.deltaTime); // targetRotation으로 캐릭터 회전
-
+        UpdateState();
+        MoveHandler();
     }
 
+    private void MoveHandler()
+    {
+        if (state == eCHARACTER_STATE.IDLE || state == eCHARACTER_STATE.ATTACK)
+            return;
+
+        float speed = (state == eCHARACTER_STATE.RUN) ? runSpeed : moveSpeed;
+        transform.Translate(movement * speed * Time.deltaTime, Space.World);
+
+        Quaternion targetRotation = Quaternion.LookRotation(movement);
+        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, turnSpeed * Time.deltaTime);
+    }
 
     void OnMove(InputValue value)
     {
+        if (state == eCHARACTER_STATE.ATTACK) return;
+
         Vector2 input = value.Get<Vector2>();
         movement = new Vector3(input.x, 0f, input.y).normalized;
     }
 
-    void JumpHandler()
+    void OnAttack()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (state != eCHARACTER_STATE.ATTACK)
         {
-            if (!isJumping)
-            {
-                float jumpTime = 2 * Mathf.Sqrt(jumpPower / -Physics.gravity.y);
-                animator.SetFloat("JumpSpeed", jumpTime);
-                Debug.Log(jumpTime);
-                animator.SetTrigger("Jump");
-
-                Vector3 jumpVelocity = Vector3.up * Mathf.Sqrt(jumpPower * -Physics.gravity.y);
-                rigid.AddForce(jumpVelocity, ForceMode.VelocityChange);
-
-                animator.SetBool("isGround", false);
-                isJumping = true;
-            }
-            else
-            {
-                return;
-            }
+            state = eCHARACTER_STATE.ATTACK;
+            animator.SetInteger("State", (int)state);
+            animator.SetTrigger("Attack");
         }
     }
 
-    void OnAttack()
+    public void AttackEnd()
     {
-        animator.SetTrigger("Attack");
-    }
+        state = eCHARACTER_STATE.IDLE;
+        Debug.Log("SSS");
 
-    public void JumpStart()
-    {
-        state = eCHARACTER_STATE.JUMP;
     }
-
-    public void JumpEnd()
-    {
-        UpdateState();
-    }
-    
-
-    // RayCast로 해보기
 }

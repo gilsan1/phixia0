@@ -4,9 +4,10 @@ using UnityEngine;
 
 public static class FactoryPattern // 패턴은 대부분 상속에 사용함 // Util
 {
-    public static CharacterBase CreateCharacter(eCHARACTER _e)
+   public static CharacterBase CreateCharacter(eCHARACTER _e)
     {
         CharacterBase character = null; // 테이블로 대체
+
 
         switch (_e)
         {
@@ -17,7 +18,6 @@ public static class FactoryPattern // 패턴은 대부분 상속에 사용함 // Util
                 character = new Monster();
                 break;
         }
-
         return character;
     }
 }
