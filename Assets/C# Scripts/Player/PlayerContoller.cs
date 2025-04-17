@@ -84,7 +84,5 @@ public class PlayerController : MonoBehaviour
     public void AttackEnd()
     {
         state = eCHARACTER_STATE.IDLE;
-        Debug.Log("SSS");
-
     }
 }

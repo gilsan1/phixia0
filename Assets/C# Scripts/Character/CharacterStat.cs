@@ -2,17 +2,33 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterStat
+
+public class CharacterStat : MonoBehaviour
 {
-    [Header("Config")]
-    protected int level;
-    protected float maxHP;
-    protected float maxMP;
-    protected float currentHP;
-    protected float currentMP;
+    public int STR;
+    public int DEX;
+    public int INT;
+    public int LUK;
 
-    protected float moveSpeed;
-    protected float attackSpeed;
+    public int level;
+    public float maxHp;
+    public float maxMp;
+    public float currentHp;
+    public float currentMp;
+    public float damage;
 
-    public float defaultDamage;
+    public void TakeDamage(float damage)
+    {
+        currentHp -= damage;
+    }
+
+    public void SetStat(int level, float hp, float mp, float damage)
+    {
+        this.level = level;
+        this.maxHp = hp;
+        this.maxMp = mp;
+        this.currentHp = maxHp;
+        this.currentMp = maxMp;
+        this.damage = damage;
+    }
 }

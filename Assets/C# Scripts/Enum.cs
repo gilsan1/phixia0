@@ -4,6 +4,7 @@ public enum eCHARACTER
     eCHARACTER_MONSTER,
 }
 
+
 public enum eAI
 {
     NONE,

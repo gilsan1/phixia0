@@ -2,12 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
-
-public abstract class CharacterBase
+public abstract class CharacterBase : MonoBehaviour
 {
-    protected CharacterStat stat;
-    public abstract void Init();
+    public CharacterStat stat;
+    public CharacterCombat combat;
 
+
+    
 }
 
 

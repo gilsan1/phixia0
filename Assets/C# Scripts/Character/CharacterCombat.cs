@@ -2,15 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CharacterCombat : MonoBehaviour
+public class CharacterCombat : ICharacterCombat
 {
     public CharacterStat stat;
 
-
-
-
-    void DAttack()
+    public void Attack(CharacterBase attacker, CharacterBase target)
     {
-
+        target.stat.TakeDamage(attacker.stat.damage);
     }
 }
