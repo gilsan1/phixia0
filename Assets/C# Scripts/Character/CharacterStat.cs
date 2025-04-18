@@ -29,8 +29,9 @@ public class CharacterStat
     }
 
     public void TakeDamage(float amount)
-    {
+    {     
         currentHP = Mathf.Max(currentHP - amount, 0f);
+        Debug.Log($"HP : {currentHP}");
     }
 
     public void Heal(float amount)

@@ -6,6 +6,7 @@ public class Monster : CharacterBase
 {
     private void Awake()
     {
+        characType = eCHARACTER.eCHARACTER_MONSTER;
         stat = new CharacterStat();
         stat.Init();
         combatSystem = new CombatSystem(stat);

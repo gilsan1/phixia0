@@ -10,6 +10,7 @@ public class Player : CharacterBase
 
     private void Awake()
     {
+        characType = eCHARACTER.eCHARACTER_PLAYER;
         stat = new CharacterStat();
         stat.Init();
 
