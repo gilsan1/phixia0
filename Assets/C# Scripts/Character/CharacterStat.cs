@@ -3,32 +3,38 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-public class CharacterStat : MonoBehaviour
+public class CharacterStat
 {
-    public int STR;
-    public int DEX;
-    public int INT;
-    public int LUK;
+    public int STR { get; private set; }
+    public int DEX { get; private set; }
+    public int INT { get; private set; }
+    public int VIT { get; private set; }
 
-    public int level;
-    public float maxHp;
-    public float maxMp;
-    public float currentHp;
-    public float currentMp;
-    public float damage;
+    public float maxHP;
+    public float maxMP;
+    public float physicalAttack;
+    public float magicAttack;
+    public float critChance;
 
-    public void TakeDamage(float damage)
+    public float currentHP { get; private set; }
+    public float currentMP { get; private set; }
+
+    public void Init()
     {
-        currentHp -= damage;
+        maxHP = 100f;
+        maxMP = 100f;
+        currentHP = maxHP;
+        currentMP = maxMP;
+        physicalAttack = 10f;
     }
 
-    public void SetStat(int level, float hp, float mp, float damage)
+    public void TakeDamage(float amount)
     {
-        this.level = level;
-        this.maxHp = hp;
-        this.maxMp = mp;
-        this.currentHp = maxHp;
-        this.currentMp = maxMp;
-        this.damage = damage;
+        currentHP = Mathf.Max(currentHP - amount, 0f);
+    }
+
+    public void Heal(float amount)
+    {
+        currentHP = Mathf.Min(currentHP + amount, maxHP);
     }
 }

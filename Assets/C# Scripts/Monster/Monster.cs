@@ -4,5 +4,18 @@ using UnityEngine;
 
 public class Monster : CharacterBase
 {
-    
+    private void Awake()
+    {
+        stat = new CharacterStat();
+        stat.Init();
+        combatSystem = new CombatSystem(stat);
+    }
+    public void AttackPlayer()
+    {
+        Player target = GameObject.FindObjectOfType<Player>();
+        if (target != null)
+        {
+            combatSystem.MeleeAttack(this, target);
+        }
+    }
 }

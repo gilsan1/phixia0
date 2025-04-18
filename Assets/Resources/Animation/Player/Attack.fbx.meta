@@ -57,10 +57,26 @@ ModelImporter:
       bodyMask: 01000000010000000100000001000000010000000100000001000000010000000100000001000000010000000100000001000000
       curves: []
       events:
-      - time: 1
+      - time: 0
+        functionName: EnableWeaponHitbox
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: 2fa29869871f3ad4db6aad1c343818eb,
+          type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 0.99771166
         functionName: AttackEnd
         data: 
         objectReferenceParameter: {fileID: 11500000, guid: 3b55e731cbbaccc47a9def3f8eef8c41,
+          type: 3}
+        floatParameter: 0
+        intParameter: 0
+        messageOptions: 0
+      - time: 1
+        functionName: DisableWeaponHitbox
+        data: 
+        objectReferenceParameter: {fileID: 11500000, guid: 2fa29869871f3ad4db6aad1c343818eb,
           type: 3}
         floatParameter: 0
         intParameter: 0
