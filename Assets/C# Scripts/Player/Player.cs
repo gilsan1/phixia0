@@ -1,100 +1,44 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+﻿using UnityEngine;
 
 public class Player : CharacterBase
 {
     [Header("Weapon")]
     [SerializeField] public WeaponHitbox hitBox;
+    [SerializeField] public WeaponBase currentWeapon;
 
     private void Awake()
     {
         characType = eCHARACTER.eCHARACTER_PLAYER;
+
         stat = new CharacterStat();
         stat.Init();
-
         combatSystem = new CombatSystem(stat);
 
+        currentWeapon = GetComponentInChildren<WeaponBase>();
         hitBox = GetComponentInChildren<WeaponHitbox>();
+
         if (hitBox != null)
             hitBox.owner = this;
     }
 
-    // 애니메이션 이벤트에서 호출
-    public void EnableWeaponHitbox()
+    public void EnableWeaponHitbox() => hitBox?.Activate();
+    public void DisableWeaponHitbox() => hitBox?.DeActivate();
+
+
+    public void Attack()
     {
-        hitBox?.Activate();
+        currentWeapon?.Attack(this);
     }
 
-    // 애니메이션 이벤트에서 호출
-    public void DisableWeaponHitbox()
+
+    //-----스킬-------//
+    public void UseSkill(int index)
     {
-        hitBox?.DeActivate();
+        currentWeapon?.UseSkill(index, this);
     }
 
-    public void R_AttackEnemy()
+    public void SkillEffect()
     {
-        Monster target = GameObject.FindAnyObjectByType<Monster>();
-        if (target != null)
-        {
-            combatSystem.RangedAttack(this, target);
-        }
-    }
-
-    public void S_AttackEnemy()
-    {
-        Monster target = GameObject.FindAnyObjectByType<Monster>();
-        if (target != null)
-        {
-            // 향후 스킬 로직 추가 예정
-        }
+        currentWeapon?.UseSkillEffect();
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-/*public class Player : CharacterBase
-{
-    private void Awake()
-    {
-        stat = new CharacterStat();
-        stat.Init();
-        combatSystem = new CombatSystem(stat);
-    }
-
-    public void M_AttackEnemy()
-    {
-        Monster target = GameObject.FindObjectOfType<Monster>();
-        if (target != null)
-        {
-            combatSystem.MeleeAttack(this, target);
-        }
-    }
-
-    public void R_AttackEnemy()
-    {
-        Monster target = GameObject.FindAnyObjectByType<Monster>();
-        if (target != null)
-        {
-            combatSystem.RangedAttack(this, target);
-        }
-    }
-    public void S_AttackEnemy()
-    {
-        Monster target = GameObject.FindAnyObjectByType<Monster>();
-        if (target != null)
-        {
-            //
-        }
-    }
-}*/

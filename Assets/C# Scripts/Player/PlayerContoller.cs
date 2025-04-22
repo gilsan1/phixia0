@@ -71,15 +71,17 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    void OnMove(InputValue value)
+    public void OnMove(InputValue value)
     {
         if (state == eCHARACTER_STATE.ATTACK) return;
+
+        if (value == null) return;
 
         Vector2 input = value.Get<Vector2>();
         movement = new Vector3(input.x, 0f, input.y).normalized;
     }
 
-    void OnAttack()
+    public void OnAttack()
     {
         if (state != eCHARACTER_STATE.ATTACK)
         {
@@ -92,5 +94,25 @@ public class PlayerController : MonoBehaviour
     public void AttackEnd()
     {
         state = eCHARACTER_STATE.IDLE;
+    }
+
+
+
+
+    public void OnSkill1()
+    {
+        if (state == eCHARACTER_STATE.ATTACK) return;
+
+        player.UseSkill(0);
+        animator.SetTrigger("Skill1");
+        state = eCHARACTER_STATE.ATTACK;
+    }
+    void OnSkill2()
+    {
+        if (state == eCHARACTER_STATE.ATTACK) return;
+
+        player.UseSkill(1);
+        animator.SetTrigger("Skill2");
+        state = eCHARACTER_STATE.ATTACK;
     }
 }

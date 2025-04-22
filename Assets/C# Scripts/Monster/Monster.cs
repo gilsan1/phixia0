@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class Monster : CharacterBase
 {
+    private MonsterSkill mSkill;
+
+
+
     private void Awake()
     {
         characType = eCHARACTER.eCHARACTER_MONSTER;

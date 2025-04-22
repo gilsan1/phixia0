@@ -25,9 +25,8 @@ public class CombatSystem
         Debug.Log($"{attacker.name} 원거리공격! {damage} 데미지");
     }
 
-    public void UseSkill(CharacterBase attacker, CharacterBase target, int baseDamage, float scalingFactor)
+    public void UseSkill(CharacterBase attacker, CharacterBase target, float damage)
     {
-        int damage = baseDamage + Mathf.RoundToInt(stat.INT * scalingFactor);
         target.stat.TakeDamage(damage);
         Debug.Log($"{attacker.name} 스킬사용! {damage} 데미지");
     }
