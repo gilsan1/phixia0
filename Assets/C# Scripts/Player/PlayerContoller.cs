@@ -1,12 +1,14 @@
-using System.Collections;
-using System.Net;
-using JetBrains.Rider.Unity.Editor;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+/// <summary>
+/// 플레이어 입력 및 이동/스킬 제어 담당
+/// </summary>
 public class PlayerController : MonoBehaviour
 {
     private Vector3 movement;
+    private Vector2 lastInput = Vector2.zero;
 
     public float runSpeed = 4f;
     public float moveSpeed = 2f;
@@ -14,52 +16,79 @@ public class PlayerController : MonoBehaviour
 
     public eCHARACTER_STATE state;
 
-    private Animator animator;
+    private PlayerAnimaton playerAnimaton;
     private Rigidbody rigid;
     private Player player;
 
+    [SerializeField] private Transform cameraTransform;
+
     private void Awake()
     {
-        animator = GetComponent<Animator>();
+        playerAnimaton = GetComponent<PlayerAnimaton>();
         rigid = GetComponent<Rigidbody>();
         player = GetComponent<Player>();
     }
 
-    private void Update()
+    private void Start()
     {
         StartCoroutine(EUpdateState());
+    }
+
+    private void Update()
+    {
         MoveHandler();
     }
 
+    /// <summary>
+    /// 상태 갱신 루프 (이동 상태 등)
+    /// </summary>
     IEnumerator EUpdateState()
     {
         while (true)
         {
-            if (state == eCHARACTER_STATE.ATTACK)
+            if (IsInActionState())
             {
                 yield return null;
                 continue;
             }
 
-            if (movement.magnitude < 0.1f)
+            Vector3 forward = cameraTransform.forward;
+            Vector3 right = cameraTransform.right;
+
+            forward.y = 0f;
+            right.y = 0f;
+            forward.Normalize();
+            right.Normalize();
+
+            Vector3 currentMove = forward * lastInput.y + right * lastInput.x;
+
+            if (currentMove.magnitude < 0.1f)
+            {
                 state = eCHARACTER_STATE.IDLE;
+                playerAnimaton.SetSpeed(0f);
+                movement = Vector3.zero;
+            }
             else if (Keyboard.current.leftShiftKey.isPressed)
+            {
                 state = eCHARACTER_STATE.RUN;
+                playerAnimaton.SetSpeed(runSpeed);
+                movement = currentMove;
+            }
             else
+            {
                 state = eCHARACTER_STATE.WALK;
+                playerAnimaton.SetSpeed(moveSpeed);
+                movement = currentMove;
+            }
 
-            animator.SetInteger("State", (int)state);
-            animator.SetBool("isMove", state == eCHARACTER_STATE.WALK || state == eCHARACTER_STATE.RUN);
-            animator.SetBool("isRun", state == eCHARACTER_STATE.RUN);
-
+            playerAnimaton.SetState(state);
             yield return null;
         }
     }
 
     private void MoveHandler()
     {
-        if (state == eCHARACTER_STATE.IDLE || state == eCHARACTER_STATE.ATTACK)
-            return;
+        if (IsInActionState()) return;
 
         float speed = (state == eCHARACTER_STATE.RUN) ? runSpeed : moveSpeed;
         transform.Translate(movement * speed * Time.deltaTime, Space.World);
@@ -73,12 +102,12 @@ public class PlayerController : MonoBehaviour
 
     public void OnMove(InputValue value)
     {
-        if (state == eCHARACTER_STATE.ATTACK) return;
-
         if (value == null) return;
 
-        Vector2 input = value.Get<Vector2>();
-        movement = new Vector3(input.x, 0f, input.y).normalized;
+        lastInput = value.Get<Vector2>();
+
+        if (!IsInActionState())
+            movement = new Vector3(lastInput.x, 0f, lastInput.y).normalized;
     }
 
     public void OnAttack()
@@ -86,33 +115,41 @@ public class PlayerController : MonoBehaviour
         if (state != eCHARACTER_STATE.ATTACK)
         {
             state = eCHARACTER_STATE.ATTACK;
-            animator.SetInteger("State", (int)state);
-            animator.SetTrigger("Attack");
+            playerAnimaton.SetState(state);
         }
     }
 
+    // 애니메이션 이벤트 호출
     public void AttackEnd()
     {
         state = eCHARACTER_STATE.IDLE;
+        playerAnimaton.SetState(state);
+        playerAnimaton.SetSpeed(0f);
     }
 
+    public void OnSkill1() => TryUseSkill(0, eCHARACTER_STATE.SKILL1);
+    public void OnSkill2() => TryUseSkill(1, eCHARACTER_STATE.SKILL2);
+    public void OnSkill3() => TryUseSkill(2, eCHARACTER_STATE.SKILL1); // enum에 따로 없으면 재활용
 
-
-
-    public void OnSkill1()
+    /// <summary>
+    /// 스킬 실행 공통 처리
+    /// </summary>
+    private void TryUseSkill(int index, eCHARACTER_STATE nextState)
     {
-        if (state == eCHARACTER_STATE.ATTACK) return;
+        if (player == null || player.currentWeapon == null) return;
 
-        player.UseSkill(0);
-        animator.SetTrigger("Skill1");
-        state = eCHARACTER_STATE.ATTACK;
+        SkillBase[] skills = player.currentWeapon.Skills;
+        if (skills.Length <= index || skills[index] == null || !skills[index].CanExecute()) return;
+
+        state = nextState;
+        playerAnimaton.SetState(state);
+        player.UseSkill(index);
     }
-    void OnSkill2()
-    {
-        if (state == eCHARACTER_STATE.ATTACK) return;
 
-        player.UseSkill(1);
-        animator.SetTrigger("Skill2");
-        state = eCHARACTER_STATE.ATTACK;
+    private bool IsInActionState()
+    {
+        return state == eCHARACTER_STATE.ATTACK ||
+               state == eCHARACTER_STATE.SKILL1 ||
+               state == eCHARACTER_STATE.SKILL2;
     }
 }

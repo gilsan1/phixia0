@@ -5,6 +5,9 @@ TagManager:
   serializedVersion: 2
   tags:
   - Ground
+  - ManaSprite
+  - HealthSprite
+  - FxTemporaire
   layers:
   - Default
   - TransparentFX
@@ -12,9 +15,9 @@ TagManager:
   - 
   - Water
   - UI
-  - Character
-  - Field
+  - Player
   - Enemy
+  - Item
   - 
   - 
   - 
@@ -41,4 +44,13 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Character
+    uniqueID: 4075917851
+    locked: 0
+  - name: UI
+    uniqueID: 3509504351
+    locked: 0
+  - name: 
+    uniqueID: 3008391901
     locked: 0

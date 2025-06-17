@@ -1,0 +1,2 @@
+ID,Name,HealTarget,HealPercent,Max,Desc,IconPath,PrefabPath
+6001,HP Potion,HP,30,20,HP Heal 30%,Icons/Item/Consumable_Icon/cheese,Prefabs/Item/Weapon/Melee/Sword

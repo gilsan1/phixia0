@@ -9,13 +9,13 @@ public class WeaponHitbox : MonoBehaviour
     public Player owner;               // 데미지를 주는 주체
     public Transform followTarget;     // 본 (R_equip_joint)
 
-    public BoxCollider hitCollider;
+    public Collider hitCollider;
 
-    private HashSet<Monster> alreadyHit = new HashSet<Monster>();
+    private HashSet<MonsterBase> alreadyHit = new HashSet<MonsterBase>();
 
     private void Awake()
     {
-        hitCollider = GetComponent<BoxCollider>();
+        hitCollider = GetComponent<Collider>();
         if (hitCollider != null)
             hitCollider.enabled = false;
     }
@@ -45,15 +45,15 @@ public class WeaponHitbox : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (owner == null || owner.combatSystem == null) return;
+        if (owner == null || owner.CombatSystem == null) return;
 
-        if (other.TryGetComponent(out Monster monster))
+        if (other.TryGetComponent(out MonsterBase monster))
         {
             if (alreadyHit.Contains(monster)) return;
             alreadyHit.Add(monster);
 
 
-            owner.combatSystem.MeleeAttack(owner, monster);
+            owner.CombatSystem.MeleeAttack(owner, monster);
         }
     }
 }

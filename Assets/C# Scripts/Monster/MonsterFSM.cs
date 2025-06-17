@@ -1,171 +1,189 @@
+癤퓎sing UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
-public class MonsterFSM : MonoBehaviour
+public class MonsterFSM : AIBase<eMONSTER_STATE>
 {
-    public eMonster_STATE currentState;
-
     [SerializeField] private float chaseRange = 10f;
     [SerializeField] private float attackRange = 5f;
-    [SerializeField] Transform target;
-
-    private Animator animator;
-    private Monster monster;
-
     [SerializeField] private Transform detectPoint;
 
-    float detectRange = 10f;       // 거리 조건
-    float viewAngle = 60f;
-
-    private Coroutine stateRoutine;
+    private Transform target;
+    private MonsterAnimation monsterAnimator;
+    private MonsterBase monster;
 
     private void Awake()
     {
-        monster = GetComponent<Monster>();
-        animator = GetComponent<Animator>();
-        currentState = eMonster_STATE.IDLE;
-        target = FindObjectOfType<Player>().transform;
+        monster = GetComponent<MonsterBase>();
+        monsterAnimator = GetComponent<MonsterAnimation>();
+        target = Shared.player_?.transform;
     }
 
     private void Start()
     {
-        ChangeState(eMonster_STATE.IDLE);
+        StartCoroutine(InitStart());
     }
 
-    public void ChangeState(eMonster_STATE state)
+    private IEnumerator InitStart()
     {
-        if (stateRoutine != null)
-            StopCoroutine(stateRoutine);
+        yield return new WaitUntil(() => Shared.player_ != null);
+        target = Shared.player_.transform;
+        ChangeState(eMONSTER_STATE.IDLE);
+    }
 
-        currentState = state;
-
-        switch (currentState)
+    protected override IEnumerator RunState(eMONSTER_STATE state)
+    {
+        switch (state)
         {
-            case eMonster_STATE.IDLE:
-                stateRoutine = StartCoroutine(IdleState());
+            case eMONSTER_STATE.IDLE:
+                yield return StartCoroutine(IdleState());
                 break;
-            case eMonster_STATE.CHASE:
-                stateRoutine = StartCoroutine(ChaseState());
+            case eMONSTER_STATE.CHASE:
+                yield return StartCoroutine(ChaseState());
                 break;
-            case eMonster_STATE.ATTACK:
-                stateRoutine = StartCoroutine(AttackState());
+            case eMONSTER_STATE.ATTACK:
+                yield return StartCoroutine(AttackState());
                 break;
+            case eMONSTER_STATE.SKILL1:
+                yield return StartCoroutine(SkillState(0));
+                break;
+            case eMONSTER_STATE.SKILL2:
+                yield return StartCoroutine(SkillState(1));
+                break;
+            case eMONSTER_STATE.DIE:
+                yield return StartCoroutine(DieState());
+                break;
+            default:
+                yield break;
         }
     }
 
-    IEnumerator IdleState()
+    private IEnumerator IdleState()
     {
-
+        monsterAnimator.SetState(eMONSTER_STATE.IDLE);
         while (true)
         {
-            animator.SetInteger("STATE", (int)eMonster_STATE.IDLE);
-
-            Vector3 dir = (target.position - detectPoint.position).normalized;
-            float dist = Vector3.Distance(detectPoint.position, target.position);
-            float angle = Vector3.Angle(detectPoint.forward, dir);
-
-            if (dist < chaseRange && angle < 60f / 2f)
+            if (target != null && Vector3.Distance(transform.position, target.position) < chaseRange)
             {
-                ChangeState(eMonster_STATE.CHASE);
+                ChangeState(eMONSTER_STATE.CHASE);
                 yield break;
             }
-
             yield return null;
         }
-        /* while (true)
-         {
-             animator.SetInteger("STATE", (int)eMonster_STATE.IDLE);
-
-             if (Vector3.Distance(transform.position, target.position) < chaseRange)
-             {
-                 ChangeState(eMonster_STATE.CHASE);
-                 yield break;
-             }
-
-             yield return null;
-         }*/
     }
 
-
-    // 추격 상태
-    IEnumerator ChaseState()
+    private IEnumerator ChaseState()
     {
+        monsterAnimator.SetState(eMONSTER_STATE.CHASE);
         while (true)
         {
-            animator.SetInteger("STATE", (int)eMonster_STATE.CHASE);
-
-            Vector3 direction = (target.position - detectPoint.position).normalized;
-            //float distance = Vector3.Distance(detectPoint.position, target.position);
-
-            Vector3 dir = (target.position - detectPoint.position).normalized;
-            float dist = Vector3.Distance(detectPoint.position, target.position);
-            float angle = Vector3.Angle(detectPoint.forward, dir);
-
-
-            if (dist > chaseRange && angle < 60f / 2f)
+            if (target == null)
             {
-                ChangeState(eMonster_STATE.IDLE);
+                ChangeState(eMONSTER_STATE.IDLE);
                 yield break;
             }
 
-            if (dist <= attackRange && angle < 60f / 2f)
+            float dist = Vector3.Distance(transform.position, target.position);
+            if (dist < attackRange)
             {
-                ChangeState(eMonster_STATE.ATTACK);
+                ChangeState(eMONSTER_STATE.ATTACK);
                 yield break;
             }
 
-            float stopDistance = 1f;
-
-            if(dist > stopDistance)
-            {
-                Vector3 targetPosition = target.position - direction * stopDistance;
-                transform.position = Vector3.MoveTowards(transform.position, targetPosition, Time.deltaTime * 2f);
-            }
-
-            Quaternion lookRotation = Quaternion.LookRotation(direction);
-            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 10f);
+            Vector3 dir = (target.position - transform.position).normalized;
+            transform.position += dir * Time.deltaTime * 2f;
 
             yield return null;
         }
     }
 
-
-    // 공격 상태
-    IEnumerator AttackState()
+    private IEnumerator AttackState()
     {
-        while (true)
+        monsterAnimator.SetState(eMONSTER_STATE.ATTACK);
+
+        float delay = GetNextSkillDelay();
+        yield return new WaitForSeconds(delay);
+
+        if (CanUseSkill(0))
         {
-            float distance = Vector3.Distance(detectPoint.position, target.position);
-
-            if (distance > attackRange)
-            {
-                ChangeState(eMonster_STATE.CHASE);
-                yield break;
-            }
-
-            animator.SetInteger("STATE", (int)eMonster_STATE.ATTACK);
-            Debug.Log("플레이어 공격");
-            monster.combatSystem.MeleeAttack(monster, target.GetComponent<CharacterBase>());
-
-            yield return new WaitForSeconds(1f);
+            ChangeState(eMONSTER_STATE.SKILL1);
+            yield break;
         }
+
+        if (CanUseSkill(1))
+        {
+            ChangeState(eMONSTER_STATE.SKILL2);
+            yield break;
+        }
+
+        ChangeState(eMONSTER_STATE.ATTACK);
     }
 
-
-    private void OnDrawGizmosSelected()
+    private IEnumerator SkillState(int index)
     {
-        Vector3 left = Quaternion.Euler(0, -viewAngle / 2f, 0) * transform.forward;
-        Vector3 right = Quaternion.Euler(0, viewAngle / 2f, 0) * transform.forward;
+        monsterAnimator.SetState(index == 0 ? eMONSTER_STATE.SKILL1 : eMONSTER_STATE.SKILL2);
 
-        Gizmos.color = Color.yellow;
-        Gizmos.DrawRay(detectPoint.position, left * attackRange);
-        Gizmos.DrawRay(detectPoint.position, right * attackRange);
+        Vector3 dir = (target.position - transform.position).normalized;
+        transform.rotation = Quaternion.LookRotation(dir);
 
+        monster.UseSkill(index);
+        monster.Skills[index].lastUsedTime = Time.time;
 
-        Gizmos.color = Color.red;
-        Gizmos.DrawRay(detectPoint.position, left * chaseRange);
-        Gizmos.DrawRay(detectPoint.position, right * chaseRange);
+        float animDuration = GetAnimationDuration(index);
+        yield return new WaitForSeconds(animDuration);
+
+        ChangeState(eMONSTER_STATE.ATTACK);
+    }
+
+    private IEnumerator DieState()
+    {
+        monsterAnimator.SetState(eMONSTER_STATE.DIE);
+        yield return new WaitForSeconds(2f);
+        Destroy(gameObject);
+    }
+
+    // Skill usable check
+    private bool CanUseSkill(int index)
+    {
+        if (monster.Skills == null || index >= monster.Skills.Length || monster.Skills[index] == null)
+            return false;
+
+        return monster.Skills[index].CanExecute();
+    }
+
+    // Skill cooldown remaining time
+    private float GetCooldownRemaining(int index)
+    {
+        if (monster.Skills == null || index >= monster.Skills.Length || monster.Skills[index] == null)
+            return float.MaxValue;
+
+        float remain = monster.Skills[index].lastUsedTime + monster.Skills[index].CoolDown - Time.time;
+        return Mathf.Max(0f, remain);
+    }
+
+    // Skill delay logic
+    private float GetNextSkillDelay()
+    {
+        float d1 = GetCooldownRemaining(0);
+        float d2 = GetCooldownRemaining(1);
+
+        if (d1 == 0f || d2 == 0f)
+            return 3f;
+        else
+            return Mathf.Min(d1, d2);
+    }
+
+    // Animation length lookup
+    private float GetAnimationDuration(int skillIndex)
+    {
+        string clipName = skillIndex == 0 ? "Enemy_Skill1" : "Enemy_Skill2";
+        var ac = monsterAnimator.animator.runtimeAnimatorController;
+        var clips = ac.animationClips;
+
+        for (int i = 0; i < clips.Length; i++)
+        {
+            if (clips[i].name == clipName)
+                return clips[i].length;
+        }
+        return 1f;
     }
 }
-
