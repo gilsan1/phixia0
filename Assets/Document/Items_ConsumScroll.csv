@@ -1,0 +1,2 @@
+ID,Name,BuffType,BuffAmount,BuffDuration,Max,Desc,IconPath,PrefabPath
+7001,Attack Scroll,ATK_UP,15,10,20,HP Heal 30%,Icons/Item/Consumable_Icon/cheese,Prefabs/Item/Weapon/Melee/Sword
