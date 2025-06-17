@@ -1,3 +1,0 @@
-ID,Name,Damage,Cooldown,Range,Angle,Indicator,Effect,IconPath,SKillType
-5001,Slash1,30,10,10,50,FAN,Effect/VFX_Sword/Slash1,Icons/Skill/Skill_Sword/SlashTest1,MELEE
-5002,Slash2,30,10,10,50,FAN,Effect/VFX_Sword/Slash1,Icons/Skill/Skill_Sword/SlashTest2,MELEE
