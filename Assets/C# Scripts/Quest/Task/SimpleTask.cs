@@ -8,7 +8,7 @@ public class SimpleTask : QuestTask
     private bool isComplete = false;
     public override bool IsComplete => isComplete;
 
-    public SimpleTask(eTASKTYPE taskType, string targetID)
+    public SimpleTask(eTASKTYPE taskType, int targetID)
     {
         this.taskType = taskType;
         this.targetID = targetID;
@@ -16,7 +16,7 @@ public class SimpleTask : QuestTask
     }
 
 
-    public override void Progress(string target, int amount = 1)
+    public override void Progress(int target, int amount = 1)
     {
         if (isComplete) return;
 

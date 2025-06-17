@@ -49,7 +49,7 @@ public class TableMgr
         scrollItem.Init_CSV("Items_ConsumScroll", 1, 0);
 
 
-
+        questData.Init_CSV("Quests", 1, 0);
         Skill.Init_CSV("SKills", 1, 0);
 #else
         Character.Init_Binary("Character");
@@ -65,6 +65,7 @@ public class TableMgr
         armorItem.Save_Binary("Items_Armor");
         potionItem.Save_Binary("Items_ConsumPotion");
         scrollItem.Save_Binary("Items_ConsumScroll");
+        questData.Save_Binary("Quests");
         Skill.Save_Binary("Skills");
 
 #if UNITY_EDITOR

@@ -5,9 +5,9 @@ using UnityEngine;
 public abstract class QuestTask 
 {
     public eTASKTYPE taskType;
-    public string targetID;
+    public int targetID;
     
     public abstract bool IsComplete { get; }
-    public abstract void Progress(string id, int amount = 1);
+    public abstract void Progress(int id, int amount = 1);
   
 }

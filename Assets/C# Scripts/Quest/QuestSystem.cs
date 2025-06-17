@@ -8,7 +8,7 @@ public class QuestSystem
     private QuestManager questManager;
 
 
-    public void OnKillEvent(string monsterID, int amount)
+    public void OnKillEvent(int monsterID, int amount)
     {
         List<Quest> activeQuests = GameManager.Instance.questManager.GetActivesQuests();
 
@@ -19,7 +19,7 @@ public class QuestSystem
         }
     }
     
-    public void OnTalkEvent(string npcID)
+    public void OnTalkEvent(int npcID)
     {
         List<Quest> activeQuests = GameManager.Instance.questManager.GetActivesQuests();
 
@@ -31,7 +31,7 @@ public class QuestSystem
     }
 
 
-    public void OnCollectEvent(string itemID, int amount)
+    public void OnCollectEvent(int itemID, int amount)
     {
         List<Quest> activeQuests = GameManager.Instance.questManager.GetActivesQuests();
 
@@ -42,7 +42,7 @@ public class QuestSystem
         }
     }
 
-    public void OnVisitEvent(string areaID)
+    public void OnVisitEvent(int areaID)
     {
         List<Quest> activeQuests = GameManager.Instance.questManager.GetActivesQuests();
 

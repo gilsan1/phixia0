@@ -19,7 +19,7 @@ public class Quest
     /// </summary>
     public int rewardGold;
     public int rewardExp;
-    public List<string> rewardItemID;
+    public List<int> rewardItemID;
 
 
     /// <summary>
@@ -30,7 +30,7 @@ public class Quest
     // 퀘스트의 상태(진행, 완료, 보상 수령)
     public eQUESTSTATE questState;
 
-    public Quest(int id, string title, string description, List<QuestTask> taskList, int rewardGold, int rewardExp, List<string> rewardItemID)
+    public Quest(int id, string title, string description, List<QuestTask> taskList, int rewardGold, int rewardExp, List<int> rewardItemID)
     {
         this.id = id;
         this.questTitle = title;
@@ -60,7 +60,7 @@ public class Quest
     /// <summary>
     /// 외부에서 퀘스트 진행 신호가 들어오면 실행
     /// </summary>
-    public void CheckProgress(eTASKTYPE taskType, string targetID, int amount)
+    public void CheckProgress(eTASKTYPE taskType, int targetID, int amount)
     {
         if (questState != eQUESTSTATE.PROGRESS) return;
 
@@ -98,7 +98,7 @@ public class Quest
 
         for (int i = 0; i < rewardItemID.Count; i++)
         {
-            string itemID = rewardItemID[i];
+            int itemID = rewardItemID[i];
             Debug.Log($"{itemID} 지급");
         }
     }

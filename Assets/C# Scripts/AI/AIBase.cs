@@ -20,13 +20,11 @@ public abstract class AIBase<TState> : MonoBehaviour where TState : Enum
             stateRoutine = StartCoroutine(RunStateWrapper(nextState));
             hasStarted = true;
 
-            Debug.Log($"[AIBase] ChangeState: {nextState}");
         }
     }
 
     private IEnumerator RunStateWrapper(TState state)
     {
-        Debug.Log($"[AIBase] RunStateWrapper: {state}");
         IEnumerator routine = RunState(state);
         if (routine != null)
             yield return StartCoroutine(routine);

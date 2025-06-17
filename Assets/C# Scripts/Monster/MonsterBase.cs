@@ -8,7 +8,7 @@ using UnityEngine;
 /// </summary>
 public abstract class MonsterBase : CharacterBase, ISkillSystem
 {
-    public string monsterID;
+    public int monsterID;
 
     protected SkillBase[] skills;
     public SkillBase[] Skills => skills;
@@ -165,6 +165,8 @@ public abstract class MonsterBase : CharacterBase, ISkillSystem
     }
     protected virtual void OnDeath()
     {
+        monsterFSM.ChangeState(eMONSTER_STATE.DIE);
+
         /// 드롭 아이템 생성하기
         for (int i = 0; i < dropList.Count; i++)
         {
@@ -208,7 +210,7 @@ public abstract class MonsterBase : CharacterBase, ISkillSystem
             }
 
             //
-            GameManager.Instance.questSystem.OnKillEvent(monsterID, 1);
         }
+        GameManager.Instance.questSystem.OnKillEvent(monsterID, 1);
     }
 }

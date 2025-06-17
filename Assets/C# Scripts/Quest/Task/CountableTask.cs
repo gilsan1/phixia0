@@ -10,7 +10,7 @@ public class CountableTask : QuestTask
 
     public override bool IsComplete => currentAmount >= targetAmount;
       
-    public CountableTask(eTASKTYPE taskType, string targetID, int targetAmount)
+    public CountableTask(eTASKTYPE taskType, int targetID, int targetAmount)
     {
         this.taskType = taskType;
         this.targetID = targetID;
@@ -18,7 +18,7 @@ public class CountableTask : QuestTask
         this.currentAmount = 0;
     }
 
-    public override void Progress(string target, int amount)
+    public override void Progress(int target, int amount)
     {
         if (IsComplete) return;
 
