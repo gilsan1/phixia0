@@ -7,7 +7,14 @@ public abstract class NPC : CharacterBase
 {
     public eNPC_TYPE npcType;
     public string npcName = "???";
+    [TextArea(2, 5)]
+    public string dialogLine = "NPC Test";
+
+
     [SerializeField] private float interactRange = 2.5f;
+
+    [SerializeField] protected Transform cameraAnchor;
+    [SerializeField] protected Transform dialogAnchor;
 
 
     /// <summary>
@@ -31,10 +38,6 @@ public abstract class NPC : CharacterBase
         CameraController.Instance.ReturnToPlayer();
     }
 
-
-
-    //-------------------Player와의 거리를 체크-------------------//
-
     /// <summary>
     /// 플레이어 위치와 NPC 간의 거리를 반환
     /// </summary>
@@ -49,5 +52,11 @@ public abstract class NPC : CharacterBase
     public bool IsInteractable(Vector3 playerPos)
     {
         return GetInteractDistance(playerPos) <= interactRange;
+    }
+
+    protected void ShowDialog()
+    {
+        GameManager.Instance.uiManager.ShowNpcDialog(npcName, dialogLine, dialogAnchor);
+        GameManager.Instance.uiManager.CreateNpcButton(this.npcType);
     }
 }

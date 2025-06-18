@@ -49,7 +49,7 @@ public class TableMgr
         scrollItem.Init_CSV("Items_ConsumScroll", 1, 0);
 
 
-        questData.Init_CSV("Quests2", 1, 0);
+        questData.Init_CSV("Quests", 1, 0);
         Skill.Init_CSV("SKills", 1, 0);
 #else
         Character.Init_Binary("Character");

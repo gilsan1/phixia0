@@ -28,6 +28,7 @@ public enum eINTERACTIONSTATE
 {
     NONE,
     NORMAL,
+    QUEST,
     SHOPPING,
     ENHANCING
 }

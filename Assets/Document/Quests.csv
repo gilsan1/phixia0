@@ -1,2 +1,2 @@
-ID,Title,Description,RewardGold,RewardExp,RewardItem,TaskType,TargetID,TargetAmount
-9001,KIll Magician,Kill Magician 1,0,10,1002,KILL,101,1
+﻿id,title,description,rewardGold,rewardExp,rewardItems,taskType,targetID,targetAmount
+1,슬라임 잡기,마을 근처의 슬라임을 처치하세요,100,50,WEAPON:1001|POTION:6001,KILL,101,1

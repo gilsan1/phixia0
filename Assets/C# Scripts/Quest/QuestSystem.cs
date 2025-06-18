@@ -8,6 +8,10 @@ public class QuestSystem
     private QuestManager questManager;
 
 
+    /// <summary>
+    /// 킬 퀘스트
+    /// </summary>
+
     public void OnKillEvent(int monsterID, int amount)
     {
         List<Quest> activeQuests = GameManager.Instance.questManager.GetActivesQuests();
@@ -19,6 +23,10 @@ public class QuestSystem
         }
     }
 
+
+    /// <summary>
+    /// NPC랑 대화
+    /// </summary>
     public void OnTalkEvent(int npcID)
     {
         List<Quest> activeQuests = GameManager.Instance.questManager.GetActivesQuests();
@@ -31,6 +39,9 @@ public class QuestSystem
     }
 
 
+    /// <summary>
+    /// 모으기 퀘스트
+    /// </summary>
     public void OnCollectEvent(int itemID, int amount)
     {
         List<Quest> activeQuests = GameManager.Instance.questManager.GetActivesQuests();
@@ -42,6 +53,10 @@ public class QuestSystem
         }
     }
 
+
+    /// <summary>
+    /// 목표지점
+    /// </summary>
     public void OnVisitEvent(int areaID)
     {
         List<Quest> activeQuests = GameManager.Instance.questManager.GetActivesQuests();
@@ -89,6 +104,8 @@ public class QuestSystem
 
             if (item != null)
                 InventorySystem.Instance.TryAddItem(item);
+            else
+                Debug.Log("Reward Item is Null");
         }
     }
 }

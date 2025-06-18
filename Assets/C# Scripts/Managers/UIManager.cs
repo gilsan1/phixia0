@@ -35,6 +35,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject exitButtonPrefab;
     [SerializeField] private GameObject shopButtonPrefab;
     [SerializeField] private GameObject enhanceButtonPrefab;
+    [SerializeField] private GameObject questButtonPrefab;
 
     [SerializeField] private Transform uiRoot;
     [SerializeField] private Transform buttonRoot;
@@ -87,10 +88,6 @@ public class UIManager : MonoBehaviour
         skillPanel?.TriggerCooldown(index);
     }
 
-    /// <summary>
-    /// 퀵슬롯 아이템 사용
-    /// </summary>
-
 
     /// <summary>
     /// 스탯 창 토글
@@ -130,6 +127,11 @@ public class UIManager : MonoBehaviour
         currentDialog.SetDialog(npcName, npcDialog);
     }
 
+
+    /// <summary>
+    /// NPC 관련 UI
+    /// </summary>
+    /// <param name="npcType"></param>
     public void CreateNpcButton(eNPC_TYPE npcType)
     {
         ClearButton();
@@ -139,10 +141,13 @@ public class UIManager : MonoBehaviour
             buttonList.Add(Instantiate(shopButtonPrefab, buttonRoot));
         else if (npcType == eNPC_TYPE.ENHANCER)
             buttonList.Add(Instantiate(enhanceButtonPrefab, buttonRoot));
+        else if (npcType == eNPC_TYPE.QUEST)
+            buttonList.Add(Instantiate(questButtonPrefab, buttonRoot));
 
-        // 공통 Exit 버튼은 항상 생성
-        buttonList.Add(Instantiate(exitButtonPrefab, buttonRoot));
+            // 공통 Exit 버튼은 항상 생성
+            buttonList.Add(Instantiate(exitButtonPrefab, buttonRoot));
     }
+
 
 
     private void ClearButton()
@@ -162,10 +167,18 @@ public class UIManager : MonoBehaviour
             Destroy(currentDialog.gameObject);
     }
 
+
     public void SetInGameUIVisible(bool isVisible)
     {
         inGameGroup.alpha = isVisible ? 1f : 0f;
         inGameGroup.interactable = isVisible;
         inGameGroup.blocksRaycasts = isVisible;
+    }
+
+
+
+    public void ShowQuestListUI(List<Quest> questList, QuestNPC npc)
+    {
+
     }
 }
