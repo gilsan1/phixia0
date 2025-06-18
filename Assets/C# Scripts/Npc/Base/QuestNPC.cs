@@ -41,9 +41,10 @@ public class QuestNPC : NPC
             if (quest.questState == eQUESTSTATE.PROGRESS || quest.questState == eQUESTSTATE.REWARD)
                 continue;
 
+
             result.Add(quest);
         }
 
         return result;
     }
-}
+} 

@@ -37,9 +37,14 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject enhanceButtonPrefab;
     [SerializeField] private GameObject questButtonPrefab;
 
+
     [SerializeField] private Transform uiRoot;
     [SerializeField] private Transform buttonRoot;
     private List<GameObject> buttonList;
+
+    [Header("UI - QuestNPC")]
+    [SerializeField] private GameObject questInfoPrefab;
+    [SerializeField] private Transform questPanel;
 
     [Header("UI - Root Group")]
     [SerializeField] private CanvasGroup inGameGroup;
@@ -179,6 +184,23 @@ public class UIManager : MonoBehaviour
 
     public void ShowQuestListUI(List<Quest> questList, QuestNPC npc)
     {
+        questPanel.gameObject.SetActive(true);
 
+        for (int i = 0; i < questPanel.childCount; i++)
+        {
+            Destroy(questPanel.GetChild(i).gameObject);
+        }
+
+        for (int i = 0; i < questList.Count; i++)
+        {
+            Quest quest = questList[i];
+
+            GameObject infoObj = Instantiate(questInfoPrefab, questPanel);
+            QuestInfo info = infoObj.GetComponent<QuestInfo>();
+            if (info != null)
+            {
+                info.Init(quest);
+            }
+        }
     }
 }
