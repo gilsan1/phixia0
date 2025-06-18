@@ -1,10 +1,10 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// Äù½ºÆ® »óÅÂ¸¦ °ü¸®ÇÏ´Â ¸Å´ÏÀú Å¬·¡½º
-/// - Å×ÀÌºí¿¡¼­ ÃÊ±âÈ­
-/// - ÁøÇà Áß/¿Ï·á Äù½ºÆ® °ü¸®
+/// í€˜ìŠ¤íŠ¸ ìƒíƒœë¥¼ ê´€ë¦¬í•˜ëŠ” ë§¤ë‹ˆì € í´ë˜ìŠ¤
+/// - í…Œì´ë¸”ì—ì„œ ì´ˆê¸°í™”
+/// - ì§„í–‰ ì¤‘/ì™„ë£Œ í€˜ìŠ¤íŠ¸ ê´€ë¦¬
 /// </summary>
 public class QuestManager : MonoBehaviour
 {
@@ -12,15 +12,13 @@ public class QuestManager : MonoBehaviour
     private List<Quest> completeQuests = new List<Quest>();
     private Dictionary<int, Quest> allQuests = new Dictionary<int, Quest>();
 
-
-
     private void Start()
     {
         InitFromTable();
     }
 
     /// <summary>
-    /// CSV Å×ÀÌºí¿¡¼­ Äù½ºÆ® µ¥ÀÌÅÍ ·Îµå ¹× »ı¼º
+    /// CSV í…Œì´ë¸”ì—ì„œ í€˜ìŠ¤íŠ¸ ë°ì´í„° ë¡œë“œ ë° ìƒì„±
     /// </summary>
     public void InitFromTable()
     {
@@ -30,7 +28,6 @@ public class QuestManager : MonoBehaviour
         {
             var info = questInfos[i];
 
-            // Äù½ºÆ® »ı¼ºÀÌ Ã³À½ÀÌ¶ó¸é µî·Ï
             if (!allQuests.TryGetValue(info.ID, out Quest quest))
             {
                 quest = new Quest(
@@ -40,7 +37,7 @@ public class QuestManager : MonoBehaviour
                     new List<QuestTask>(),
                     info.RewardGold,
                     info.RewardExp,
-                    new List<int>() { info.RewardItemID }
+                    info.RewardItems
                 );
 
                 allQuests.Add(info.ID, quest);
@@ -48,62 +45,51 @@ public class QuestManager : MonoBehaviour
                 Debug.Log($"New Quest ID {info.ID}");
             }
 
-            // TaskType ¹®ÀÚ¿­ ¡æ enumÀ¸·Î º¯È¯
-            if (!System.Enum.TryParse(info.TaskType, out eTASKTYPE taskType))
-            {
-                Debug.LogError($"[QuestManager] Àß¸øµÈ TaskType: {info.TaskType}");
-                continue;
-            }
-
-            QuestTask task = (taskType == eTASKTYPE.KILL || taskType == eTASKTYPE.COLLECT)
-                ? new CountableTask(taskType, info.TargetID, info.TargetAmount)
-                : new SimpleTask(taskType, info.TargetID);
+            QuestTask task = (info.TaskType == eTASKTYPE.KILL || info.TaskType == eTASKTYPE.COLLECT)
+                ? new CountableTask(info.TaskType, info.TargetID, info.TargetAmount)
+                : new SimpleTask(info.TaskType, info.TargetID);
 
             quest.tasks.Add(task);
         }
 
-        Debug.Log($"[QuestManager] Äù½ºÆ® µ¥ÀÌÅÍ {allQuests.Count}°³ ·Îµå ¿Ï·á");
+        Debug.Log($"[QuestManager] í€˜ìŠ¤íŠ¸ ë°ì´í„° {allQuests.Count}ê°œ ë¡œë“œ ì™„ë£Œ");
     }
 
     /// <summary>
-    /// Äù½ºÆ® ¼ö¶ô (ID ±âÁØ)
+    /// í€˜ìŠ¤íŠ¸ ìˆ˜ë½ (ID ê¸°ì¤€)
     /// </summary>
     public void AcceptQuest(int questID)
     {
         if (!allQuests.TryGetValue(questID, out Quest quest))
         {
-            Debug.LogError($"[QuestManager] ÇØ´ç IDÀÇ Äù½ºÆ®°¡ Á¸ÀçÇÏÁö ¾Ê½À´Ï´Ù: {questID}");
+            Debug.LogError($"[QuestManager] í•´ë‹¹ IDì˜ í€˜ìŠ¤íŠ¸ê°€ ì¡´ì¬í•˜ì§€ ì•ŠìŠµë‹ˆë‹¤: {questID}");
             return;
         }
 
         if (activeQuests.Contains(quest))
         {
-            Debug.LogWarning($"[QuestManager] ÀÌ¹Ì ¼ö¶ôÇÑ Äù½ºÆ®ÀÔ´Ï´Ù: {quest.questTitle}");
+            Debug.LogWarning($"[QuestManager] ì´ë¯¸ ìˆ˜ë½í•œ í€˜ìŠ¤íŠ¸ì…ë‹ˆë‹¤: {quest.questTitle}");
             return;
         }
 
         activeQuests.Add(quest);
-        Debug.Log($"[QuestManager] Äù½ºÆ® ¼ö¶ô: {quest.questTitle}");
+        Debug.Log($"[QuestManager] í€˜ìŠ¤íŠ¸ ìˆ˜ë½: {quest.questTitle}");
     }
 
     public void OnQuestComplete(Quest quest)
     {
         if (!activeQuests.Contains(quest))
         {
-            Debug.LogWarning($"[QuestManager] ¿Ï·á Ã³¸® ¿äÃ»µÈ Äù½ºÆ®°¡ ÁøÇà Áß ¸®½ºÆ®¿¡ ¾ø½À´Ï´Ù: {quest.questTitle}");
+            Debug.LogWarning($"[QuestManager] ì™„ë£Œ ì²˜ë¦¬ ìš”ì²­ëœ í€˜ìŠ¤íŠ¸ê°€ ì§„í–‰ ì¤‘ ë¦¬ìŠ¤íŠ¸ì— ì—†ìŠµë‹ˆë‹¤: {quest.questTitle}");
             return;
         }
 
         activeQuests.Remove(quest);
         completeQuests.Add(quest);
 
-        Debug.Log($"[QuestManager] Äù½ºÆ® ¿Ï·áµÊ: {quest.questTitle}");
+        Debug.Log($"[QuestManager] í€˜ìŠ¤íŠ¸ ì™„ë£Œë¨: {quest.questTitle}");
 
-        for (int i = 0; i < quest.rewardItemID.Count; i++)
-        {
-            InventorySystem.Instance.TryAddItem(TableMgr.Instance.weaponItem.GetItem(quest.rewardItemID[i]));
-        }
-        // TODO: º¸»ó Áö±Ş Ã³¸® °¡´É
+        // ë³´ìƒ ì§€ê¸‰ì€ ì´ì œ QuestSystemì—ì„œ ì²˜ë¦¬
     }
 
     public List<Quest> GetActivesQuests() => activeQuests;
@@ -115,7 +101,7 @@ public class QuestManager : MonoBehaviour
         activeQuests.Clear();
         completeQuests.Clear();
         allQuests.Clear();
-        Debug.Log("[QuestManager] Äù½ºÆ® ÃÊ±âÈ­ ¿Ï·á");
+        Debug.Log("[QuestManager] í€˜ìŠ¤íŠ¸ ì´ˆê¸°í™” ì™„ë£Œ");
     }
 
     public Quest GetQuest(int id)

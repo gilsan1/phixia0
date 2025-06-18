@@ -18,7 +18,7 @@ public class QuestSystem
             quest.CheckProgress(eTASKTYPE.KILL, monsterID, 1);
         }
     }
-    
+
     public void OnTalkEvent(int npcID)
     {
         List<Quest> activeQuests = GameManager.Instance.questManager.GetActivesQuests();
@@ -56,4 +56,40 @@ public class QuestSystem
     {
         questManager = manger;
     }
+
+    public void CompleteQuest(Quest quest)
+    {
+        GameManager.Instance.questManager.OnQuestComplete(quest);
+        GiveReward(quest);
+        quest.MarkRewarded();
+    }
+
+    public void GiveReward(Quest quest)
+    {
+        for (int i = 0; i < quest.rewardItems.Count; i++)
+        {
+            QuestRewardItems reward = quest.rewardItems[i];
+            ItemBase item = null;
+
+            switch (reward.itemType)
+            {
+                case eQUESTREWARD.WEAPON:
+                    item = TableMgr.Instance.weaponItem.GetItem(reward.id);
+                    break;
+                case eQUESTREWARD.ARMOR:
+                    item = TableMgr.Instance.armorItem.GetItem(reward.id);
+                    break;
+                case eQUESTREWARD.POTION:
+                    item = TableMgr.Instance.potionItem.GetItem(reward.id);
+                    break;
+                case eQUESTREWARD.SCROLL:
+                    item = TableMgr.Instance.scrollItem.GetItem(reward.id);
+                    break;
+            }
+
+            if (item != null)
+                InventorySystem.Instance.TryAddItem(item);
+        }
+    }
 }
+

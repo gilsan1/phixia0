@@ -56,6 +56,15 @@ public enum eQUESTTYPE
     SUBQUEST
 }
 
+public enum eQUESTREWARD
+{
+    WEAPON,
+    ARMOR,
+    //EARING,
+    POTION,
+    SCROLL
+}
+
 /// <summary>
 /// 캐릭터 상태 (애니메이터에서 사용)
 /// </summary>

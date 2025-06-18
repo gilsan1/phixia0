@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -12,13 +11,14 @@ public class TableQuest : TableBase
 
         public int RewardGold;
         public int RewardExp;
-        public int RewardItemID;
 
-        public string TaskType;
+        public List<QuestRewardItems> RewardItems = new List<QuestRewardItems>();
+
+        public eTASKTYPE TaskType;
         public int TargetID;
         public int TargetAmount;
-
     }
+
     private List<QuestInfo> questList = new List<QuestInfo>();
 
     public void Init_CSV(string fileName, int startRow, int startCol)
@@ -44,19 +44,45 @@ public class TableQuest : TableBase
         reader.get(row, ref data.Description);
         reader.get(row, ref data.RewardGold);
         reader.get(row, ref data.RewardExp);
-        reader.get(row, ref data.RewardItemID);
-        reader.get(row, ref data.TaskType);
+
+        string rawReward = "";
+        reader.get(row, ref rawReward);
+        data.RewardItems = ParseRewardItems(rawReward);
+
+        string rawTaskType = "";
+        reader.get(row, ref rawTaskType);
+        System.Enum.TryParse(rawTaskType, out data.TaskType);
         reader.get(row, ref data.TargetID);
         reader.get(row, ref data.TargetAmount);
 
         return true;
     }
 
+    private List<QuestRewardItems> ParseRewardItems(string raw)
+    {
+        List<QuestRewardItems> result = new List<QuestRewardItems>();
+        if (string.IsNullOrEmpty(raw)) return result;
+
+        string[] tokens = raw.Split('|');
+        for (int i = 0; i < tokens.Length; i++)
+        {
+            string[] parts = tokens[i].Split(':');
+            if (parts.Length != 2) continue;
+
+            if (System.Enum.TryParse(parts[0], out eQUESTREWARD rewardType))
+            {
+                if (int.TryParse(parts[1], out int id))
+                {
+                    result.Add(new QuestRewardItems(rewardType, id));
+                }
+            }
+        }
+
+        return result;
+    }
+
     public List<QuestInfo> GetAll() => questList;
 
     public void Save_Binary(string name) => Save_Binary(name, questList);
     public void Init_Binary(string name) => Load_Binary(name, ref questList);
-
-
-
 }
