@@ -7,9 +7,9 @@
 ### Unity ###
 .vs/
 .svn/
-Assets/UnityVS/
-Assets/Asset/
-Assets/Asset
+# Assets/UnityVS/
+# Assets/Asset/
+
 .Library/
 Library/
 Temp/
