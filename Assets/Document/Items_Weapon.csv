@@ -1,3 +1,0 @@
-ID,Name,Type,EquipType,Atk,Def,Desc,MaxStack,IconPath,PrefabPath
-1001,Iron Sword2,EQUIP,WEAPON,14,3,This is Iron Sword,1,Icons/Item/Equip_Icon/Weapon/Weapon,Prefabs/Item/Weapon/Melee/Sword
-1002,Iron Sword1,EQUIP,WEAPON,10,3,IronSword2,1,Icons/Item/Equip_Icon/Weapon/Weapon2,Prefabs/Item/Weapon/Melee/Sword
