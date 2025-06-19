@@ -1,0 +1,5 @@
+ID,Name,Type,EquipType,ArmorType,Atk,Def,Desc,MaxStack,IconPath,PrefabPath
+1001,Iron Sword2,EQUIP,WEAPON,NONE,14,3,This is Iron Sword,1,Icons/Item/Equip_Icon/Weapon/Weapon,Prefabs/Item/Weapon/Melee/Sword
+1002,Iron Sword1,EQUIP,WEAPON,NONE,10,3,IronSword2,1,Icons/Item/Equip_Icon/Weapon/Weapon2,Prefabs/Item/Weapon/Melee/Sword
+1003,"""Iron Helmet2""",EQUIP,ARMOR,HELMET,2,5,This is Iron Helmet,1,Icons/Item/Equip_Icon/Armor/Helmet,Prefabs/Item/Armor/Helmet/Helmet
+1004,"""Iron Helmet1""",EQUIP,ARMOR,HELMET,2,5,This is Iron Helmet,1,Icons/Item/Equip_Icon/Armor/Helmet2,Prefabs/Item/Armor/Helmet/Helmet
