@@ -7,7 +7,7 @@ using UnityEngine;
 /// 퀘스트 NPC -> 각 NPC마다 가지고 있는 퀘스트ID를 통하여 퀘스트 목록을 생성해주고 플레이어에게 제공
 /// </summary>
 
-public class QuestNPC : NPC
+public class QuestNPC : NPC, IInteractable
 {
     [Header("QUEST IDS")]
     [SerializeField] private List<int> questIDs; // ID들을 설정
@@ -19,7 +19,12 @@ public class QuestNPC : NPC
 
         CameraController.Instance.FocusOn(cameraAnchor, () =>
         {
+            GameManager.Instance.uiManager.ShowNpcDialog(npcName, dialogLine, cameraAnchor);
+
+            GameManager.Instance.uiManager.CreateNpcButton(eNPC_TYPE.QUEST);
+
             List<Quest> availableQuests = GetAvailableQuests();
+
             GameManager.Instance.uiManager.ShowQuestListUI(availableQuests, this);
         });
     }
@@ -46,5 +51,11 @@ public class QuestNPC : NPC
         }
 
         return result;
+    }
+
+    public void QuestButton()
+    {
+        List<Quest> availableQuests = GetAvailableQuests();
+        GameManager.Instance.uiManager.ShowQuestListUI(availableQuests, this);
     }
 } 

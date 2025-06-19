@@ -28,6 +28,8 @@ public partial class Player : CharacterBase, ISkillSystem
     
     public eINTERACTIONSTATE interacState { get; private set; } = eINTERACTIONSTATE.NONE;
 
+    public IInteractable interactTarget { get; set; }
+
     public void SetInteractionState(eINTERACTIONSTATE state)
     {
         interacState = state;

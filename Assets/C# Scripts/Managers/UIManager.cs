@@ -44,7 +44,8 @@ public class UIManager : MonoBehaviour
 
     [Header("UI - QuestNPC")]
     [SerializeField] private GameObject questInfoPrefab;
-    [SerializeField] private Transform questPanel;
+    [SerializeField] private GameObject questPanel;
+    [SerializeField] private Transform questPaneltransform;
 
     [Header("UI - Root Group")]
     [SerializeField] private CanvasGroup inGameGroup;
@@ -147,8 +148,17 @@ public class UIManager : MonoBehaviour
         else if (npcType == eNPC_TYPE.ENHANCER)
             buttonList.Add(Instantiate(enhanceButtonPrefab, buttonRoot));
         else if (npcType == eNPC_TYPE.QUEST)
-            buttonList.Add(Instantiate(questButtonPrefab, buttonRoot));
+        {
+            GameObject questBtn = Instantiate(questButtonPrefab, buttonRoot);
+            buttonList.Add(questBtn);
 
+            // 버튼 클릭 시 NPC가 가진 QuestButton 실행
+            Button btn = questBtn.GetComponent<Button>();
+            if (btn != null && Shared.player_.interactTarget is QuestNPC questNpc)
+            {
+                btn.onClick.AddListener(() => questNpc.QuestButton());
+            }
+        }
             // 공통 Exit 버튼은 항상 생성
             buttonList.Add(Instantiate(exitButtonPrefab, buttonRoot));
     }
@@ -186,16 +196,16 @@ public class UIManager : MonoBehaviour
     {
         questPanel.gameObject.SetActive(true);
 
-        for (int i = 0; i < questPanel.childCount; i++)
+        for (int i = 0; i < questPaneltransform.childCount; i++)
         {
-            Destroy(questPanel.GetChild(i).gameObject);
+            Destroy(questPaneltransform.GetChild(i).gameObject);
         }
 
         for (int i = 0; i < questList.Count; i++)
         {
             Quest quest = questList[i];
 
-            GameObject infoObj = Instantiate(questInfoPrefab, questPanel);
+            GameObject infoObj = Instantiate(questInfoPrefab, questPaneltransform);
             QuestInfo info = infoObj.GetComponent<QuestInfo>();
             if (info != null)
             {
